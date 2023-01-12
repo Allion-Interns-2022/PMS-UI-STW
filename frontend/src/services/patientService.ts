@@ -67,20 +67,20 @@ export const getPatient = (
   success: (d: any) => void,
   failed: (d: any) => void
 ) => {
-  const patientData: IPatientState["patientDetails"] = {
-    id: 0,
-    name: "",
-    dob: "",
-    weightKG: 0,
-    heightCM: 0,
-    address: "",
-    contact: "",
-    emergencyContact: "",
-  }
+  // const patientData: IPatientState["patientDetails"] = {
+  //   id: 0,
+  //   name: "",
+  //   dob: new Date(),
+  //   weightKG: 0,
+  //   heightCM: 0,
+  //   address: "",
+  //   contact: "",
+  //   emergencyContact: "",
+  // }
   api.get(`patients/${id}`).then(
     (response) => {
       success(response);
-      return response;
+      // return response;
     },
     (error) => {
       failed(error);

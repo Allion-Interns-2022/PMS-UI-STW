@@ -6,7 +6,7 @@ const initialState: IPatientState = {
   patientDetails: {
     id: 0,
     name: "",
-    dob: DateTime.now().toString(),
+    dob: new Date(),
     weightKG: 0,
     heightCM: 0,
     address: "",

@@ -2,7 +2,7 @@ export interface IPatientState {
     patientDetails: {
       id: number;
       name: string;
-      dob: string;
+      dob: Date;
       weightKG: number;
       heightCM: number;
       address: string;

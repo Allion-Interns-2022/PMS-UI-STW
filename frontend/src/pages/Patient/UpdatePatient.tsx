@@ -11,6 +11,7 @@ import { getPatient, updatePatient } from "../../services/patientService";
 import { IPatientState } from "../../config/commonTypes";
 import { useState } from "react";
 import { patientActions } from "../../redux/features/patient";
+import moment from 'moment';
 
 const UpdatePatient = () => {
 // let data: IPatientState["patientDetails"] = {
@@ -26,7 +27,7 @@ const UpdatePatient = () => {
   const [data, setData] = useState({
     id: 0,
     name: "",
-    dob: "",
+    dob: new Date(),
     weightKG: 0,
     heightCM: 0,
     address: "",
@@ -40,7 +41,9 @@ const UpdatePatient = () => {
     (errorData: any) => console.log(errorData)
   );
   
-  
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   const dispatch = useAppDispatch();
 
@@ -120,8 +123,8 @@ const UpdatePatient = () => {
           <Form.Control
             type="date"
             placeholder="Date of Birth"
-            // value={data.dob}
-            onChange={(e) => setData({ ...data, dob: e.target.value })}
+            value={data.dob.toISOString().substring(0, 10)}
+            onChange={(e) => setData({ ...data, dob: moment(e.target.value).toDate()  })}
             id="dob"
             name="dob"
           />
