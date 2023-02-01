@@ -18,7 +18,7 @@ export const allPatients = (
   };
 
 export const postPatient = (
-  values: IPatientState,
+  values: IPatientState["patientDetails"],
   success: (d: any) => void,
   failed: (d: any) => void
 ) => {
@@ -33,11 +33,11 @@ export const postPatient = (
 };
 
 export const updatePatient = (
-  values: IPatientState,
+  patientDetails: IPatientState["patientDetails"],
   success: (d: any) => void,
   failed: (d: any) => void
 ) => {
-  api.put(`patients/${values.patientDetails.id}`, values).then(
+  api.put(`patients/${patientDetails.id}`, patientDetails).then(
     (response) => {
       success(response);
     },
@@ -67,24 +67,13 @@ export const getPatient = (
   success: (d: any) => void,
   failed: (d: any) => void
 ) => {
-  // const patientData: IPatientState["patientDetails"] = {
-  //   id: 0,
-  //   name: "",
-  //   dob: new Date(),
-  //   weightKG: 0,
-  //   heightCM: 0,
-  //   address: "",
-  //   contact: "",
-  //   emergencyContact: "",
-  // }
   api.get(`patients/${id}`).then(
     (response) => {
       success(response);
-      // return response;
     },
     (error) => {
       failed(error);
+      console.log(error);
     }
   );
-  //toask 
 };

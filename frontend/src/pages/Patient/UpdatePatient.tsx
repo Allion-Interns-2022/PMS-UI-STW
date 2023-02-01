@@ -1,94 +1,79 @@
-import NavBar from "../../NavBar";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
-import { useEffect } from "react";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { Toast } from "react-bootstrap";
-import { getPatient, updatePatient } from "../../services/patientService";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { IPatientState } from "../../config/commonTypes";
-import { useState } from "react";
-import { patientActions } from "../../redux/features/patient";
-import moment from 'moment';
+import { updatePatient } from "../../services/patientService";
+import { toast, ToastContainer } from "react-toastify";
+import NavBar from "../../NavBar";
+import { useAppSelector } from "../../redux/app/hooks";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
+import { PatientValidationSchema as validationSchema } from "../../config/ValidationRules";
 
-const UpdatePatient = () => {
-// let data: IPatientState["patientDetails"] = {
-//   id: 0,
-//   name: "",
-//   dob: "",
-//   weightKG: 0,
-//   heightCM: 0,
-//   address: "",
-//   contact: "",
-//   emergencyContact: "",
-// },
-  const [data, setData] = useState({
-    id: 0,
-    name: "",
-    dob: new Date(),
-    weightKG: 0,
-    heightCM: 0,
-    address: "",
-    contact: "",
-    emergencyContact: "",
-  });
-  const patientId = useAppSelector((state) => state.patient.patientDetails.id);
-  getPatient(
-    patientId,
-    (successData: any) => {setData(successData)},
-    (errorData: any) => console.log(errorData)
+const App: React.FC = () => {
+  const patientDetails: IPatientState["patientDetails"] = useAppSelector(
+    (state) => state.patient.updatePatientDetails
   );
-  
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
-  const dispatch = useAppDispatch();
+  const initialValues = {
+    id: patientDetails.id,
+    name: patientDetails.name,
+    dob: patientDetails.dob,
+    weightKG: patientDetails.weightKG,
+    heightCM: patientDetails.heightCM,
+    address: patientDetails.address,
+    contact: patientDetails.contact,
+    emergencyContact: patientDetails.emergencyContact,
+  };
 
-  const form = document.getElementById("contact-form");
+  const [data, setData] = useState({
+    id: patientDetails.id,
+    name: patientDetails.name,
+    dob: patientDetails.dob,
+    weightKG: patientDetails.weightKG,
+    heightCM: patientDetails.heightCM,
+    address: patientDetails.address,
+    contact: patientDetails.contact,
+    emergencyContact: patientDetails.emergencyContact,
+  });
 
-  //   form.addEventListener("submit", (e) => {
-  //     e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<IPatientState["patientDetails"]>({
+    resolver: yupResolver(validationSchema),
+  });
 
-  //     const myFormData = new FormData(e.target);
+  const navigate = useNavigate();
 
-  //     const formDataObj = Object.fromEntries(myFormData.entries());
-
-  //     console.log(JSON.stringify(formDataObj, null, 2));
-
-  //   });
-
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    // const myFormData = new FormData(event.currentTarget);
-
-    const formDataObj: any = Object.fromEntries(
-      new FormData(event.currentTarget).entries()
-    );
-
+  const submitHandler = () => {
     updatePatient(
-      formDataObj,
-      (successData: any) =>
-        toast.success(successData, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }),
+      data,
+      (successData: any) => {
+        navigate("/allpatients");
+        setTimeout(() => {
+          toast.success(successData, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }, 0);
+      },
       (errorData: any) => console.log(errorData)
     );
-
-    // return(createPatient(formDataObj));
-    // console.log(formDataObj);
   };
-//todo validation react-hook-forms with yup
+
+  const onSubmit = (data: IPatientState["patientDetails"]) => {
+    submitHandler();
+  };
+
   return (
     <div>
       <NavBar />
@@ -104,99 +89,124 @@ const UpdatePatient = () => {
         pauseOnHover
         theme="light"
       />
-      <h2 className="py-4">Add Patient</h2>
-      <Form id="contact-form" onSubmit={submitHandler}>
-        <Form.Group className="mb-3">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter name"
-            value={data.name}
-            onChange={(e) => setData({ ...data, name: e.target.value })}
-            id="name"
-            name="name"
-          />
-        </Form.Group>
+      <h2 className="py-4">Update Patient</h2>
+      <div className="register-form">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="form-group">
+            <label>Name</label>
+            <input
+              type="text"
+              value={data.name}
+              {...register("name", {
+                onChange: (e) => {
+                  setData({ ...data, name: e.target.value });
+                },
+              })}
+              className={`form-control ${errors.name ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.name?.message}</div>
+          </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Date of Birth</Form.Label>
-          <Form.Control
-            type="date"
-            placeholder="Date of Birth"
-            value={data.dob.toISOString().substring(0, 10)}
-            onChange={(e) => setData({ ...data, dob: moment(e.target.value).toDate()  })}
-            id="dob"
-            name="dob"
-          />
-        </Form.Group>
+          <div className="form-group">
+            <label>Date of Birth</label>
+            <input
+              type="date"
+              value={moment(data.dob).format("YYYY-MM-DD")}
+              {...register("dob", {
+                onChange: (e) => {
+                  setData({ ...data, dob: moment(e.target.value).toDate() });
+                },
+              })}
+              className={`form-control ${errors.dob ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.dob?.message}</div>
+          </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Weight (kg)</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Enter weight"
-            id="weight"
-            name="weightKG"
-            value={data.weightKG}
-            onChange={(e) => setData({ ...data, weightKG: parseInt(e.target.value) })}
-          />
-        </Form.Group>
+          <div className="form-group">
+            <label>Weight</label>
+            <input
+              type="number"
+              value={data.weightKG}
+              {...register("weightKG", {
+                onChange: (e) => {
+                  setData({ ...data, weightKG: parseInt(e.target.value) });
+                },
+              })}
+              className={`form-control ${errors.weightKG ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.weightKG?.message}</div>
+          </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Height (cm)</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Enter height"
-            id="height"
-            name="heightCM"
-            value={data.heightCM}
-            onChange={(e) => setData({ ...data, heightCM: parseInt(e.target.value) })}
-          />
-        </Form.Group>
+          <div className="form-group">
+            <label>Height</label>
+            <input
+              type="number"
+              value={data.heightCM}
+              {...register("heightCM", {
+                onChange: (e) => {
+                  setData({ ...data, heightCM: parseInt(e.target.value) });
+                },
+              })}
+              className={`form-control ${errors.heightCM ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.heightCM?.message}</div>
+          </div>
+          <div className="form-group">
+            <label>Address</label>
+            <input
+              type="text"
+              value={data.address}
+              {...register("address", {
+                onChange: (e) => {
+                  setData({ ...data, address: e.target.value });
+                },
+              })}
+              className={`form-control ${errors.address ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.address?.message}</div>
+          </div>
+          <div className="form-group">
+            <label>Contact</label>
+            <input
+              type="text"
+              value={data.contact}
+              {...register("contact", {
+                onChange: (e) => {
+                  setData({ ...data, contact: e.target.value });
+                },
+              })}
+              className={`form-control ${errors.contact ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.contact?.message}</div>
+          </div>
+          <div className="form-group">
+            <label>Emergency Contact</label>
+            <input
+              type="text"
+              value={data.emergencyContact}
+              {...register("emergencyContact", {
+                onChange: (e) => {
+                  setData({ ...data, emergencyContact: e.target.value });
+                },
+              })}
+              className={`form-control ${
+                errors.emergencyContact ? "is-invalid" : ""
+              }`}
+            />
+            <div className="invalid-feedback">
+              {errors.emergencyContact?.message}
+            </div>
+          </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Address</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter address"
-            id="address"
-            name="address"
-            value={data.address}
-            onChange={(e) => setData({ ...data, address: e.target.value })}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Contact</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter contact"
-            id="contact"
-            name="contact"
-            value={data.contact}
-            onChange={(e) => setData({ ...data, contact: e.target.value })}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Emergency Contact</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter emergency contact"
-            id="emergencycontact"
-            name="emergencyContact"
-            value={data.emergencyContact}
-            onChange={(e) => setData({ ...data, emergencyContact: e.target.value })}
-          />
-        </Form.Group>
-        <div className="d-grid gap-4">
-          <Button variant="primary" className="my-3" type="submit">
-            Save
-          </Button>
-        </div>
-      </Form>
+          <div className="form-group">
+            <button type="submit" className="btn btn-primary">
+              Register
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default UpdatePatient;
+export default App;

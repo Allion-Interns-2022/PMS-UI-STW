@@ -1,7 +1,5 @@
-import React from "react";
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Axios from "axios";
 import { useEffect } from "react";
 import NavBar from "../../NavBar";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
@@ -11,23 +9,27 @@ import {
   getPatient,
   allPatients,
 } from "../../services/patientService";
-import { IPatientState } from "../../config/commonTypes";
+import { IMedicalRecordState, IPatientState } from "../../config/commonTypes";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { getMedicalRecord } from "../../services/medicalRecordService";
+import {
+  deleteMedicalRecord,
+  getMedicalRecord,
+} from "../../services/medicalRecordService";
 import { medicalRecordActions } from "../../redux/features/medicalrecord";
+import { Button } from "react-bootstrap";
 
-const AllPatients = () => {
+const MedicalRecord = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   Axios.get("https://localhost:7197/api/patients").then((response) => {
-  //     dispatch(patientActions.allPatients(response.data));
-  //   });
-  // }, []);
+  const medicalRecordsOfPatientId = useAppSelector(
+    (state) => state.medicalRecord.medicalRecordsOfPatientId
+  );
+  console.log(medicalRecordsOfPatientId);
+
   const deleteHandler = (id: number) => {
-    deletePatient(
+    deleteMedicalRecord(
       id,
       (successData: any) => {
         toast.success(successData, {
@@ -40,9 +42,12 @@ const AllPatients = () => {
           progress: undefined,
           theme: "light",
         });
-        allPatients(
-          (successData: any) =>
-            dispatch(patientActions.allPatients(successData)),
+        getMedicalRecord(
+          medicalRecordsOfPatientId,
+          (successData: any) => {
+            dispatch(medicalRecordActions.getMedicalRecord(successData));
+            navigate("/medicalrecords");
+          },
           (errorData: any) => console.log(errorData)
         );
       },
@@ -51,32 +56,19 @@ const AllPatients = () => {
   };
 
   function updateHandler(
-    patientDetails: IPatientState["updatePatientDetails"]
+    medicalRecordDetails: IMedicalRecordState["medicalRecordDetails"]
   ) {
-    dispatch(patientActions.updatePatient(patientDetails));
-    navigate("/updatepatient");
+    dispatch(medicalRecordActions.updateMedicalRecord(medicalRecordDetails));
+    navigate("/updatemedicalrecord");
   }
 
-  const recordHandler = (id: number) => {
-    dispatch(medicalRecordActions.medicalRecordsOfPatientId(id));
-    getMedicalRecord(
-      id,
-      (successData: any) => {
-        dispatch(medicalRecordActions.getMedicalRecord(successData));
-        navigate("/medicalrecords");
-      },
-      (errorData: any) => console.log(errorData)
-    );
+  const addHandler = () => {
+    navigate("/addmedicalrecord");
   };
 
-  const selectorData = useAppSelector((state) => state.patient.patientDetails);
-
-  useEffect(() => {
-    allPatients(
-      (successData: any) => dispatch(patientActions.allPatients(successData)),
-      (errorData: any) => console.log(errorData)
-    );
-  }, []);
+  const selectorData = useAppSelector(
+    (state) => state.medicalRecord.medicalRecordDetails
+  );
 
   return (
     <div>
@@ -94,17 +86,29 @@ const AllPatients = () => {
       />
       <NavBar />
 
+      <h2 className="d-inline-block px-4 py-4">Medical Records</h2>
+      <Button
+        className="d-inline-block ml-4"
+        variant="primary"
+        onClick={addHandler}
+      >
+        Add Record
+      </Button>
+
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>DOB</th>
-            <th>WeightKG</th>
-            <th>HeightCM</th>
-            <th>Address</th>
-            <th>Contact</th>
-            <th>Emergency Contact</th>
+            <th>Sample Collected Date</th>
+            <th>Sugar (Mmol)</th>
+            <th>Temperature (Celcius)</th>
+            <th>Platelet (Mmol)</th>
+            <th>Hemoglobin (Gdl)</th>
+            <th>PatientId</th>
+            <th>Created</th>
+            <th>CreatedBy</th>
+            <th>LastModified</th>
+            <th>LastModifiedBy</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -113,36 +117,17 @@ const AllPatients = () => {
             selectorData?.map((p) => (
               <tr key={p.id}>
                 <td>{p.id}</td>
-                <td>{p.name}</td>
-                <td>{moment(p.dob).format("YYYY-MM-DD")}</td>
-                <td>{p.weightKG}</td>
-                <td>{p.heightCM}</td>
-                <td>{p.address}</td>
-                <td>{p.contact}</td>
-                <td>{p.emergencyContact}</td>
+                <td>{moment(p.sampleCollectedDate).format("YYYY-MM-DD")}</td>
+                <td>{p.sugarMmol}</td>
+                <td>{p.temperatureCelcius}</td>
+                <td>{p.plateletMmol}</td>
+                <td>{p.hemoglobinGdl}</td>
+                <td>{p.patientId}</td>
+                <td>{moment(p.created).format("YYYY-MM-DD")}</td>
+                <td>{p.createdBy}</td>
+                <td>{moment(p.lastModified).format("YYYY-MM-DD")}</td>
+                <td>{p.lastModifiedBy}</td>
                 <td>
-                  <button
-                    name={p.id}
-                    title="View medical records"
-                    type="button"
-                    className="btn btn-outline-info m-1"
-                    onClick={() => {
-                      recordHandler(p.id);
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="#87CEFA"
-                      className="bi bi-clipboard2-pulse"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5h3Z" />
-                      <path d="M3 2.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 0 0-1h-.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1H12a.5.5 0 0 0 0 1h.5a.5.5 0 0 1 .5.5v12a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-12Z" />
-                      <path d="M9.979 5.356a.5.5 0 0 0-.968.04L7.92 10.49l-.94-3.135a.5.5 0 0 0-.926-.08L4.69 10H4.5a.5.5 0 0 0 0 1H5a.5.5 0 0 0 .447-.276l.936-1.873 1.138 3.793a.5.5 0 0 0 .968-.04L9.58 7.51l.94 3.135A.5.5 0 0 0 11 11h.5a.5.5 0 0 0 0-1h-.128L9.979 5.356Z" />
-                    </svg>
-                  </button>
                   <button
                     type="button"
                     title="Update"
@@ -199,4 +184,4 @@ const AllPatients = () => {
   );
 };
 
-export default AllPatients;
+export default MedicalRecord;

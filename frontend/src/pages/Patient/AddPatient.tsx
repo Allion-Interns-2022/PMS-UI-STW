@@ -1,64 +1,69 @@
 import NavBar from "../../NavBar";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Toast } from "react-bootstrap";
 import { postPatient } from "../../services/patientService";
+import moment from "moment";
+import { Formik, Field, Form, ErrorMessage, FormikHelpers } from "formik";
+import * as Yup from "yup";
+import { IPatientState } from "../../config/commonTypes";
+import initialPatientValues from "../../config/initialValues/initialPatientValues";
+import { PatientValidationSchema as validationSchema } from "../../config/ValidationRules";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
 
 const AddPatient = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const form = document.getElementById("contact-form");
 
-  //   form.addEventListener("submit", (e) => {
-  //     e.preventDefault();
-
-  //     const myFormData = new FormData(e.target);
-
-  //     const formDataObj = Object.fromEntries(myFormData.entries());
-
-  //     console.log(JSON.stringify(formDataObj, null, 2));
-
-  //   });
-
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    // const myFormData = new FormData(event.currentTarget);
-
-    const formDataObj: any = Object.fromEntries(
-      new FormData(event.currentTarget).entries()
-    );
-
+  const submitHandler = () => {
     postPatient(
-      formDataObj,
-      (successData: any) =>
-        toast.success(successData, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }),
+      data,
+      (successData: any) =>{
+        navigate("/allpatients");
+        setTimeout(() => {
+          toast.success(successData, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }, 0);
+
+      },
       (errorData: any) => console.log(errorData)
     );
-
-    
-
-    // return(createPatient(formDataObj));
-    // console.log(formDataObj);
   };
 
-  // const createPatient = (formDataObj: PatientState["value"]) => {
+  const initialValues: IPatientState["patientDetails"] = initialPatientValues;
 
-  // };
+  const [data, setData] =
+    useState<IPatientState["patientDetails"]>(initialPatientValues);
+
+    const onSubmit = (data: IPatientState["patientDetails"]) => {
+      submitHandler();
+    };
+
+    const {
+      register,
+      handleSubmit,
+      reset,
+      formState: { errors },
+    } = useForm<IPatientState["patientDetails"]>({
+      resolver: yupResolver(validationSchema),
+    });
+  
 
   return (
     <div>
@@ -76,82 +81,121 @@ const AddPatient = () => {
         theme="light"
       />
       <h2 className="py-4">Add Patient</h2>
-      <Form id="contact-form" onSubmit={submitHandler}>
-        <Form.Group className="mb-3">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter name"
-            id="name"
-            name="name"
-          />
-        </Form.Group>
+      <div className="register-form">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="form-group">
+            <label>Name</label>
+            <input
+              type="text"
+              value={data.name}
+              {...register("name", {
+                onChange: (e) => {
+                  setData({ ...data, name: e.target.value });
+                },
+              })}
+              className={`form-control ${errors.name ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.name?.message}</div>
+          </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Date of Birth</Form.Label>
-          <Form.Control
-            type="date"
-            placeholder="Date of Birth"
-            id="dob"
-            name="dob"
-          />
-        </Form.Group>
+          <div className="form-group">
+            <label>Date of Birth</label>
+            <input
+              type="date"
+              value={moment(data.dob).format("YYYY-MM-DD")}
+              {...register("dob", {
+                onChange: (e) => {
+                  setData({ ...data, dob: moment(e.target.value).toDate() });
+                },
+              })}
+              className={`form-control ${errors.dob ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.dob?.message}</div>
+          </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Weight (kg)</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Enter weight"
-            id="weight"
-            name="weightKG"
-          />
-        </Form.Group>
+          <div className="form-group">
+            <label>Weight</label>
+            <input
+              type="number"
+              value={data.weightKG}
+              {...register("weightKG", {
+                onChange: (e) => {
+                  setData({ ...data, weightKG: parseInt(e.target.value) });
+                },
+              })}
+              className={`form-control ${errors.weightKG ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.weightKG?.message}</div>
+          </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Height (cm)</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Enter height"
-            id="height"
-            name="heightCM"
-          />
-        </Form.Group>
+          <div className="form-group">
+            <label>Height</label>
+            <input
+              type="number"
+              value={data.heightCM}
+              {...register("heightCM", {
+                onChange: (e) => {
+                  setData({ ...data, heightCM: parseInt(e.target.value) });
+                },
+              })}
+              className={`form-control ${errors.heightCM ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.heightCM?.message}</div>
+          </div>
+          <div className="form-group">
+            <label>Address</label>
+            <input
+              type="text"
+              value={data.address}
+              {...register("address", {
+                onChange: (e) => {
+                  setData({ ...data, address: e.target.value });
+                },
+              })}
+              className={`form-control ${errors.address ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.address?.message}</div>
+          </div>
+          <div className="form-group">
+            <label>Contact</label>
+            <input
+              type="text"
+              value={data.contact}
+              {...register("contact", {
+                onChange: (e) => {
+                  setData({ ...data, contact: e.target.value });
+                },
+              })}
+              className={`form-control ${errors.contact ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.contact?.message}</div>
+          </div>
+          <div className="form-group">
+            <label>Emergency Contact</label>
+            <input
+              type="text"
+              value={data.emergencyContact}
+              {...register("emergencyContact", {
+                onChange: (e) => {
+                  setData({ ...data, emergencyContact: e.target.value });
+                },
+              })}
+              className={`form-control ${
+                errors.emergencyContact ? "is-invalid" : ""
+              }`}
+            />
+            <div className="invalid-feedback">
+              {errors.emergencyContact?.message}
+            </div>
+          </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Address</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter address"
-            id="address"
-            name="address"
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Contact</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter contact"
-            id="contact"
-            name="contact"
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Emergency Contact</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter emergency contact"
-            id="emergencycontact"
-            name="emergencyContact"
-          />
-        </Form.Group>
-        <div className="d-grid gap-4">
-          <Button variant="primary" className="my-3" type="submit">
-            Save
-          </Button>
-        </div>
-      </Form>
+          <div className="form-group">
+            <button type="submit" className="btn btn-primary">
+              Register
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

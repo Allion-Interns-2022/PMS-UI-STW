@@ -26,7 +26,7 @@ const NavBar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#link">Medical Records</Nav.Link>
+            <Nav.Link onClick={() => navigate("/addmedicalrecord")}>Add Medical Record</Nav.Link>
             <NavDropdown title="Patients" id="basic-nav-dropdown">
               <NavDropdown.Item onClick={() => navigate("/allpatients")}>
                 All Patients
