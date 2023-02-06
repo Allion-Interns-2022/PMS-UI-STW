@@ -1,15 +1,16 @@
 import moment from "moment";
-import { IMedicalRecordState, IPatientState } from "../commonTypes";
+import { IPatientState } from "../commonTypes";
 
 const initialPatientValues: IPatientState["patientDetails"] = {
-  id: 0,
-  name: "",
-  dob: moment().toDate(),
-  weightKG: 0,
-  heightCM: 0,
-  address: "",
-  contact: "",
-  emergencyContact: "",
+  Id: 0,
+  Name: "",
+  DOB: moment().toDate(),
+  WeightKG: 0,
+  HeightCM: 0,
+  Address: "",
+  Contact: "",
+  EmergencyContact: "",
+  MedicalRecords: null,
 };
 
 export default initialPatientValues;

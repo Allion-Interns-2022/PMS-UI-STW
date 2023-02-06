@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DateTime } from "luxon";
-import { IMedicalRecordState, IPatientState } from "../../config/commonTypes";
+import { IMedicalRecordState } from "../../config/commonTypes";
 import initialMedicalRecordValues from "../../config/initialValues/initialMedicalRecordValues";
 const initialState: IMedicalRecordState = {
   medicalRecordDetails: initialMedicalRecordValues,

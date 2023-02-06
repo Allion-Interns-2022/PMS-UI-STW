@@ -15,26 +15,16 @@ const App: React.FC = () => {
     (state) => state.patient.updatePatientDetails
   );
 
-  const initialValues = {
-    id: patientDetails.id,
-    name: patientDetails.name,
-    dob: patientDetails.dob,
-    weightKG: patientDetails.weightKG,
-    heightCM: patientDetails.heightCM,
-    address: patientDetails.address,
-    contact: patientDetails.contact,
-    emergencyContact: patientDetails.emergencyContact,
-  };
-
   const [data, setData] = useState({
-    id: patientDetails.id,
-    name: patientDetails.name,
-    dob: patientDetails.dob,
-    weightKG: patientDetails.weightKG,
-    heightCM: patientDetails.heightCM,
-    address: patientDetails.address,
-    contact: patientDetails.contact,
-    emergencyContact: patientDetails.emergencyContact,
+    Id: patientDetails.Id,
+    Name: patientDetails.Name,
+    DOB: patientDetails.DOB,
+    WeightKG: patientDetails.WeightKG,
+    HeightCM: patientDetails.HeightCM,
+    Address: patientDetails.Address,
+    Contact: patientDetails.Contact,
+    EmergencyContact: patientDetails.EmergencyContact,
+    MedicalRecords: null,
   });
 
   const {
@@ -96,111 +86,111 @@ const App: React.FC = () => {
             <label>Name</label>
             <input
               type="text"
-              value={data.name}
-              {...register("name", {
+              value={data.Name}
+              {...register("Name", {
                 onChange: (e) => {
-                  setData({ ...data, name: e.target.value });
+                  setData({ ...data, Name: e.target.value });
                 },
               })}
-              className={`form-control ${errors.name ? "is-invalid" : ""}`}
+              className={`form-control ${errors.Name ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.name?.message}</div>
+            <div className="invalid-feedback">{errors.Name?.message}</div>
           </div>
 
           <div className="form-group">
             <label>Date of Birth</label>
             <input
               type="date"
-              value={moment(data.dob).format("YYYY-MM-DD")}
-              {...register("dob", {
+              value={moment(data.DOB).format("YYYY-MM-DD")}
+              {...register("DOB", {
                 onChange: (e) => {
-                  setData({ ...data, dob: moment(e.target.value).toDate() });
+                  setData({ ...data, DOB: moment(e.target.value).toDate() });
                 },
               })}
-              className={`form-control ${errors.dob ? "is-invalid" : ""}`}
+              className={`form-control ${errors.DOB ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.dob?.message}</div>
+            <div className="invalid-feedback">{errors.DOB?.message}</div>
           </div>
 
           <div className="form-group">
             <label>Weight</label>
             <input
               type="number"
-              value={data.weightKG}
-              {...register("weightKG", {
+              value={data.WeightKG}
+              {...register("WeightKG", {
                 onChange: (e) => {
-                  setData({ ...data, weightKG: parseInt(e.target.value) });
+                  setData({ ...data, WeightKG: parseInt(e.target.value) });
                 },
               })}
-              className={`form-control ${errors.weightKG ? "is-invalid" : ""}`}
+              className={`form-control ${errors.WeightKG ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.weightKG?.message}</div>
+            <div className="invalid-feedback">{errors.WeightKG?.message}</div>
           </div>
 
           <div className="form-group">
             <label>Height</label>
             <input
               type="number"
-              value={data.heightCM}
-              {...register("heightCM", {
+              value={data.HeightCM}
+              {...register("HeightCM", {
                 onChange: (e) => {
-                  setData({ ...data, heightCM: parseInt(e.target.value) });
+                  setData({ ...data, HeightCM: parseInt(e.target.value) });
                 },
               })}
-              className={`form-control ${errors.heightCM ? "is-invalid" : ""}`}
+              className={`form-control ${errors.HeightCM ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.heightCM?.message}</div>
+            <div className="invalid-feedback">{errors.HeightCM?.message}</div>
           </div>
           <div className="form-group">
             <label>Address</label>
             <input
               type="text"
-              value={data.address}
-              {...register("address", {
+              value={data.Address}
+              {...register("Address", {
                 onChange: (e) => {
-                  setData({ ...data, address: e.target.value });
+                  setData({ ...data, Address: e.target.value });
                 },
               })}
-              className={`form-control ${errors.address ? "is-invalid" : ""}`}
+              className={`form-control ${errors.Address ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.address?.message}</div>
+            <div className="invalid-feedback">{errors.Address?.message}</div>
           </div>
           <div className="form-group">
             <label>Contact</label>
             <input
               type="text"
-              value={data.contact}
-              {...register("contact", {
+              value={data.Contact}
+              {...register("Contact", {
                 onChange: (e) => {
-                  setData({ ...data, contact: e.target.value });
+                  setData({ ...data, Contact: e.target.value });
                 },
               })}
-              className={`form-control ${errors.contact ? "is-invalid" : ""}`}
+              className={`form-control ${errors.Contact ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.contact?.message}</div>
+            <div className="invalid-feedback">{errors.Contact?.message}</div>
           </div>
           <div className="form-group">
             <label>Emergency Contact</label>
             <input
               type="text"
-              value={data.emergencyContact}
-              {...register("emergencyContact", {
+              value={data.EmergencyContact}
+              {...register("EmergencyContact", {
                 onChange: (e) => {
-                  setData({ ...data, emergencyContact: e.target.value });
+                  setData({ ...data, EmergencyContact: e.target.value });
                 },
               })}
               className={`form-control ${
-                errors.emergencyContact ? "is-invalid" : ""
+                errors.EmergencyContact ? "is-invalid" : ""
               }`}
             />
             <div className="invalid-feedback">
-              {errors.emergencyContact?.message}
+              {errors.EmergencyContact?.message}
             </div>
           </div>
 
           <div className="form-group">
             <button type="submit" className="btn btn-primary">
-              Register
+              Update
             </button>
           </div>
         </form>

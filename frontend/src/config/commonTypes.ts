@@ -1,69 +1,50 @@
 export interface IMedicalRecordState {
   medicalRecordDetails: {
-    sampleCollectedDate: Date;
-    sugarMmol: number;
-    temperatureCelcius: number;
-    plateletMmol: number;
-    hemoglobinGdl: number;
-    patientId: number;
-    created: Date;
-    createdBy: string;
-    lastModified: Date;
-    lastModifiedBy: string;
-    id: number;
+    SampleCollectedDate: Date;
+    SugarMmol: number;
+    TemperatureCelcius: number;
+    PlateletMmol: number;
+    HemoglobinGdl: number;
+    PatientId: number;
+    Created: Date;
+    CreatedBy: string;
+    LastModified: Date;
+    LastModifiedBy: string;
+    Id: number;
   };
-  updateMedicalRecordDetails: {
-    sampleCollectedDate: Date;
-    sugarMmol: number;
-    temperatureCelcius: number;
-    plateletMmol: number;
-    hemoglobinGdl: number;
-    patientId: number;
-    created: Date;
-    createdBy: string;
-    lastModified: Date;
-    lastModifiedBy: string;
-    id: number;
-  };
+  updateMedicalRecordDetails: IMedicalRecordState["medicalRecordDetails"];
   medicalRecordsOfPatientId: number;
 }
 
 export interface IPatientState {
   patientDetails: {
-    id: number;
-    name: string;
-    dob: Date;
-    weightKG: number;
-    heightCM: number;
-    address: string;
-    contact: string;
-    emergencyContact: string;
+    Id: number;
+    Name: string;
+    DOB: Date;
+    WeightKG: number;
+    HeightCM: number;
+    Address: string;
+    Contact: string;
+    EmergencyContact: string;
+    MedicalRecords: null;
   };
-  updatePatientDetails: {
-    id: number;
-    name: string;
-    dob: Date;
-    weightKG: number;
-    heightCM: number;
-    address: string;
-    contact: string;
-    emergencyContact: string;
-  };
+  updatePatientDetails: IPatientState["patientDetails"];
 }
-// create interface IPatientState with patientdetails: object and updatepatientid: number
+
 export interface IUserState {
   userDetails: {
     id: number;
-    firsName: string;
+    firstName: string;
     lastName: string;
     username: string;
     password: string;
-    created: string;
+    created: Date;
     createdBy: string;
-    lastModified: string;
+    lastModified: Date;
     lastModifiedBy: string;
   };
   isAuthenticated: boolean;
+  userToken: string;
 }
 
 export {};
@@ -80,11 +61,11 @@ export interface IInputFieldProps {
 }
 
 export interface IValidationSchema {
-  name: string;
-  dob: Date;
-  weightKG: number;
-  heightCM: number;
-  address: string;
-  contact: string;
-  emergencyContact: string;
+  Name: string;
+  DOB: Date;
+  WeightKG: number;
+  HeightCM: number;
+  Address: string;
+  Contact: string;
+  EmergencyContact: string;
 }

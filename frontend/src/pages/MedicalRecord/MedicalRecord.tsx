@@ -1,15 +1,8 @@
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect } from "react";
 import NavBar from "../../NavBar";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
-import { patientActions } from "../../redux/features/patient";
-import {
-  deletePatient,
-  getPatient,
-  allPatients,
-} from "../../services/patientService";
-import { IMedicalRecordState, IPatientState } from "../../config/commonTypes";
+import { IMedicalRecordState } from "../../config/commonTypes";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
@@ -26,7 +19,6 @@ const MedicalRecord = () => {
   const medicalRecordsOfPatientId = useAppSelector(
     (state) => state.medicalRecord.medicalRecordsOfPatientId
   );
-  console.log(medicalRecordsOfPatientId);
 
   const deleteHandler = (id: number) => {
     deleteMedicalRecord(
@@ -115,18 +107,18 @@ const MedicalRecord = () => {
         <tbody>
           {selectorData instanceof Array &&
             selectorData?.map((p) => (
-              <tr key={p.id}>
-                <td>{p.id}</td>
-                <td>{moment(p.sampleCollectedDate).format("YYYY-MM-DD")}</td>
-                <td>{p.sugarMmol}</td>
-                <td>{p.temperatureCelcius}</td>
-                <td>{p.plateletMmol}</td>
-                <td>{p.hemoglobinGdl}</td>
-                <td>{p.patientId}</td>
-                <td>{moment(p.created).format("YYYY-MM-DD")}</td>
-                <td>{p.createdBy}</td>
-                <td>{moment(p.lastModified).format("YYYY-MM-DD")}</td>
-                <td>{p.lastModifiedBy}</td>
+              <tr key={p.Id}>
+                <td>{p.Id}</td>
+                <td>{moment(p.SampleCollectedDate).format("YYYY-MM-DD")}</td>
+                <td>{p.SugarMmol}</td>
+                <td>{p.TemperatureCelcius}</td>
+                <td>{p.PlateletMmol}</td>
+                <td>{p.HemoglobinGdl}</td>
+                <td>{p.PatientId}</td>
+                <td>{moment(p.Created).format("YYYY-MM-DD")}</td>
+                <td>{p.CreatedBy}</td>
+                <td>{moment(p.LastModified).format("YYYY-MM-DD")}</td>
+                <td>{p.LastModifiedBy}</td>
                 <td>
                   <button
                     type="button"
@@ -152,12 +144,12 @@ const MedicalRecord = () => {
                     </svg>
                   </button>
                   <button
-                    name={p.id}
+                    name={p.Id}
                     title="Delete"
                     type="button"
                     className="btn btn-outline-danger m-1"
                     onClick={() => {
-                      deleteHandler(p.id);
+                      deleteHandler(p.Id);
                     }}
                   >
                     <svg

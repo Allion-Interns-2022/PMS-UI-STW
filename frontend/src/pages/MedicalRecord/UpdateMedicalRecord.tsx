@@ -8,7 +8,10 @@ import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { MedicalRecordValidationSchema as validationSchema } from "../../config/ValidationRules";
-import { getMedicalRecord, updateMedicalRecord } from "../../services/medicalRecordService";
+import {
+  getMedicalRecord,
+  updateMedicalRecord,
+} from "../../services/medicalRecordService";
 import { medicalRecordActions } from "../../redux/features/medicalrecord";
 
 const App: React.FC = () => {
@@ -16,17 +19,17 @@ const App: React.FC = () => {
     useAppSelector((state) => state.medicalRecord.updateMedicalRecordDetails);
 
   const initialValues = {
-    sampleCollectedDate: medicalRecordDetails.sampleCollectedDate,
-    sugarMmol: medicalRecordDetails.sugarMmol,
-    temperatureCelcius: medicalRecordDetails.temperatureCelcius,
-    plateletMmol: medicalRecordDetails.plateletMmol,
-    hemoglobinGdl: medicalRecordDetails.hemoglobinGdl,
-    patientId: medicalRecordDetails.patientId,
-    created: medicalRecordDetails.created,
-    createdBy: medicalRecordDetails.createdBy,
-    lastModified: medicalRecordDetails.lastModified,
-    lastModifiedBy: medicalRecordDetails.lastModifiedBy,
-    id: medicalRecordDetails.id,
+    SampleCollectedDate: medicalRecordDetails.SampleCollectedDate,
+    SugarMmol: medicalRecordDetails.SugarMmol,
+    TemperatureCelcius: medicalRecordDetails.TemperatureCelcius,
+    PlateletMmol: medicalRecordDetails.PlateletMmol,
+    HemoglobinGdl: medicalRecordDetails.HemoglobinGdl,
+    PatientId: medicalRecordDetails.PatientId,
+    Created: medicalRecordDetails.Created,
+    CreatedBy: medicalRecordDetails.CreatedBy,
+    LastModified: medicalRecordDetails.LastModified,
+    LastModifiedBy: medicalRecordDetails.LastModifiedBy,
+    Id: medicalRecordDetails.Id,
   };
 
   const [data, setData] = useState(initialValues);
@@ -48,14 +51,13 @@ const App: React.FC = () => {
       data,
       (successData: any) => {
         getMedicalRecord(
-            data.id,
-            (successData: any) => {
-              dispatch(medicalRecordActions.getMedicalRecord(successData));
-              navigate("/medicalrecords");
-            },
-            (errorData: any) => console.log(errorData)
-          );
-        navigate("/medicalrecords");
+          data.Id,
+          (successData: any) => {
+            dispatch(medicalRecordActions.getMedicalRecord(successData));
+          },
+          (errorData: any) => console.log(errorData)
+        );
+        navigate("/allpatients");
         setTimeout(() => {
           toast.success(successData, {
             position: "top-right",
@@ -67,7 +69,7 @@ const App: React.FC = () => {
             progress: undefined,
             theme: "light",
           });
-        }, 0);
+        }, 1);
       },
       (errorData: any) => console.log(errorData)
     );
@@ -99,21 +101,21 @@ const App: React.FC = () => {
             <label>Sample Collected Date</label>
             <input
               type="date"
-              value={moment(data.sampleCollectedDate).format("YYYY-MM-DD")}
-              {...register("sampleCollectedDate", {
+              value={moment(data.SampleCollectedDate).format("YYYY-MM-DD")}
+              {...register("SampleCollectedDate", {
                 onChange: (e) => {
                   setData({
                     ...data,
-                    sampleCollectedDate: moment(e.target.value).toDate(),
+                    SampleCollectedDate: moment(e.target.value).toDate(),
                   });
                 },
               })}
               className={`form-control ${
-                errors.sampleCollectedDate ? "is-invalid" : ""
+                errors.SampleCollectedDate ? "is-invalid" : ""
               }`}
             />
             <div className="invalid-feedback">
-              {errors.sampleCollectedDate?.message}
+              {errors.SampleCollectedDate?.message}
             </div>
           </div>
 
@@ -121,36 +123,36 @@ const App: React.FC = () => {
             <label>Sugar (Mmol)</label>
             <input
               type="number"
-              value={data.sugarMmol}
-              {...register("sugarMmol", {
+              value={data.SugarMmol}
+              {...register("SugarMmol", {
                 onChange: (e) => {
-                  setData({ ...data, sugarMmol: parseInt(e.target.value) });
+                  setData({ ...data, SugarMmol: parseInt(e.target.value) });
                 },
               })}
-              className={`form-control ${errors.sugarMmol ? "is-invalid" : ""}`}
+              className={`form-control ${errors.SugarMmol ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.sugarMmol?.message}</div>
+            <div className="invalid-feedback">{errors.SugarMmol?.message}</div>
           </div>
 
           <div className="form-group">
             <label>Temperature (Celcius)</label>
             <input
               type="number"
-              value={data.temperatureCelcius}
-              {...register("temperatureCelcius", {
+              value={data.TemperatureCelcius}
+              {...register("TemperatureCelcius", {
                 onChange: (e) => {
                   setData({
                     ...data,
-                    temperatureCelcius: parseInt(e.target.value),
+                    TemperatureCelcius: parseInt(e.target.value),
                   });
                 },
               })}
               className={`form-control ${
-                errors.temperatureCelcius ? "is-invalid" : ""
+                errors.TemperatureCelcius ? "is-invalid" : ""
               }`}
             />
             <div className="invalid-feedback">
-              {errors.temperatureCelcius?.message}
+              {errors.TemperatureCelcius?.message}
             </div>
           </div>
 
@@ -158,18 +160,18 @@ const App: React.FC = () => {
             <label>Platelet (Mmol)</label>
             <input
               type="number"
-              value={data.plateletMmol}
-              {...register("plateletMmol", {
+              value={data.PlateletMmol}
+              {...register("PlateletMmol", {
                 onChange: (e) => {
-                  setData({ ...data, plateletMmol: parseInt(e.target.value) });
+                  setData({ ...data, PlateletMmol: parseInt(e.target.value) });
                 },
               })}
               className={`form-control ${
-                errors.plateletMmol ? "is-invalid" : ""
+                errors.PlateletMmol ? "is-invalid" : ""
               }`}
             />
             <div className="invalid-feedback">
-              {errors.plateletMmol?.message}
+              {errors.PlateletMmol?.message}
             </div>
           </div>
 
@@ -177,18 +179,18 @@ const App: React.FC = () => {
             <label>Hemoglobin (Gdl)</label>
             <input
               type="number"
-              value={data.hemoglobinGdl}
-              {...register("hemoglobinGdl", {
+              value={data.HemoglobinGdl}
+              {...register("HemoglobinGdl", {
                 onChange: (e) => {
-                  setData({ ...data, hemoglobinGdl: parseInt(e.target.value) });
+                  setData({ ...data, HemoglobinGdl: parseInt(e.target.value) });
                 },
               })}
               className={`form-control ${
-                errors.hemoglobinGdl ? "is-invalid" : ""
+                errors.HemoglobinGdl ? "is-invalid" : ""
               }`}
             />
             <div className="invalid-feedback">
-              {errors.hemoglobinGdl?.message}
+              {errors.HemoglobinGdl?.message}
             </div>
           </div>
 
@@ -196,69 +198,69 @@ const App: React.FC = () => {
             <label>Patient Id</label>
             <input
               type="number"
-              value={data.patientId}
-              {...register("patientId", {
+              value={data.PatientId}
+              {...register("PatientId", {
                 onChange: (e) => {
-                  setData({ ...data, patientId: parseInt(e.target.value) });
+                  setData({ ...data, PatientId: parseInt(e.target.value) });
                 },
               })}
-              className={`form-control ${errors.patientId ? "is-invalid" : ""}`}
+              className={`form-control ${errors.PatientId ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.patientId?.message}</div>
+            <div className="invalid-feedback">{errors.PatientId?.message}</div>
           </div>
 
           <div className="form-group">
             <label>Created Date</label>
             <input
               type="date"
-              value={moment(data.created).format("YYYY-MM-DD")}
-              {...register("created", {
+              value={moment(data.Created).format("YYYY-MM-DD")}
+              {...register("Created", {
                 onChange: (e) => {
                   setData({
                     ...data,
-                    created: moment(e.target.value).toDate(),
+                    Created: moment(e.target.value).toDate(),
                   });
                 },
               })}
-              className={`form-control ${errors.created ? "is-invalid" : ""}`}
+              className={`form-control ${errors.Created ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.created?.message}</div>
+            <div className="invalid-feedback">{errors.Created?.message}</div>
           </div>
 
           <div className="form-group">
             <label>Created By</label>
             <input
               type="text"
-              value={data.createdBy}
-              {...register("createdBy", {
+              value={data.CreatedBy}
+              {...register("CreatedBy", {
                 onChange: (e) => {
-                  setData({ ...data, createdBy: e.target.value });
+                  setData({ ...data, CreatedBy: e.target.value });
                 },
               })}
-              className={`form-control ${errors.createdBy ? "is-invalid" : ""}`}
+              className={`form-control ${errors.CreatedBy ? "is-invalid" : ""}`}
             />
-            <div className="invalid-feedback">{errors.createdBy?.message}</div>
+            <div className="invalid-feedback">{errors.CreatedBy?.message}</div>
           </div>
 
           <div className="form-group">
             <label>Last Modified Date</label>
             <input
               type="date"
-              value={moment(data.lastModified).format("YYYY-MM-DD")}
-              {...register("lastModified", {
+              value={moment(data.LastModified).format("YYYY-MM-DD")}
+              {...register("LastModified", {
                 onChange: (e) => {
                   setData({
                     ...data,
-                    lastModified: moment(e.target.value).toDate(),
+                    LastModified: moment(e.target.value).toDate(),
                   });
                 },
               })}
               className={`form-control ${
-                errors.lastModified ? "is-invalid" : ""
+                errors.LastModified ? "is-invalid" : ""
               }`}
             />
             <div className="invalid-feedback">
-              {errors.lastModified?.message}
+              {errors.LastModified?.message}
             </div>
           </div>
 
@@ -266,18 +268,18 @@ const App: React.FC = () => {
             <label>Created By</label>
             <input
               type="text"
-              value={data.lastModifiedBy}
-              {...register("lastModifiedBy", {
+              value={data.LastModifiedBy}
+              {...register("LastModifiedBy", {
                 onChange: (e) => {
-                  setData({ ...data, lastModifiedBy: e.target.value });
+                  setData({ ...data, LastModifiedBy: e.target.value });
                 },
               })}
               className={`form-control ${
-                errors.lastModifiedBy ? "is-invalid" : ""
+                errors.LastModifiedBy ? "is-invalid" : ""
               }`}
             />
             <div className="invalid-feedback">
-              {errors.lastModifiedBy?.message}
+              {errors.LastModifiedBy?.message}
             </div>
           </div>
 

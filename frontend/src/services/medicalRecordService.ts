@@ -1,14 +1,12 @@
 import api from "../config/api";
-import { IMedicalRecordState, IPatientState } from "../config/commonTypes";
-import { useAppDispatch } from "../redux/app/hooks";
-import { patientActions } from "../redux/features/patient";
+import { IMedicalRecordState } from "../config/commonTypes";
 
 export const getMedicalRecord = (
-  id: number,
+  Id: number,
   success: (d: any) => void,
   failed: (d: any) => void
 ) => {
-  api.get(`medicalrecords/patient/${id}`).then(
+  api.get(`medicalrecords/patient/${Id}`).then(
     (response) => {
       success(response);
     },
@@ -24,7 +22,7 @@ export const updateMedicalRecord = (
   failed: (d: any) => void
 ) => {
   api
-    .put(`medicalRecords/${medicalRecordDetails.id}`, medicalRecordDetails)
+    .put(`medicalRecords/${medicalRecordDetails.Id}`, medicalRecordDetails)
     .then(
       (response) => {
         success(response);
@@ -36,11 +34,11 @@ export const updateMedicalRecord = (
 };
 
 export const deleteMedicalRecord = (
-    id: number,
+    Id: number,
     success: (d: any) => void,
     failed: (d: any) => void
   ) => {
-    api.delete(`medicalRecords/${id}`).then(
+    api.delete(`medicalRecords/${Id}`).then(
       (response) => {
         success(response);
       },
