@@ -1,16 +1,10 @@
-import React from "react";
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Axios from "axios";
 import { useEffect } from "react";
 import NavBar from "../../NavBar";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
 import { patientActions } from "../../redux/features/patient";
-import {
-  deletePatient,
-  getPatient,
-  allPatients,
-} from "../../services/patientService";
+import { deletePatient, allPatients } from "../../services/patientService";
 import { IPatientState } from "../../config/commonTypes";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -21,11 +15,7 @@ import { medicalRecordActions } from "../../redux/features/medicalrecord";
 const AllPatients = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   Axios.get("https://localhost:7197/api/patients").then((response) => {
-  //     dispatch(patientActions.allPatients(response.data));
-  //   });
-  // }, []);
+
   const deleteHandler = (id: number) => {
     deletePatient(
       id,
@@ -57,10 +47,10 @@ const AllPatients = () => {
     navigate("/updatepatient");
   }
 
-  const recordHandler = (id: number) => {
-    dispatch(medicalRecordActions.medicalRecordsOfPatientId(id));
+  const recordHandler = (Id: number) => {
+    dispatch(medicalRecordActions.medicalRecordsOfPatientId(Id));
     getMedicalRecord(
-      id,
+      Id,
       (successData: any) => {
         dispatch(medicalRecordActions.getMedicalRecord(successData));
         navigate("/medicalrecords");
@@ -76,8 +66,7 @@ const AllPatients = () => {
       (successData: any) => dispatch(patientActions.allPatients(successData)),
       (errorData: any) => console.log(errorData)
     );
-  }, []);
-
+  }, [typeof selectorData]);
   return (
     <div>
       <ToastContainer
@@ -111,30 +100,30 @@ const AllPatients = () => {
         <tbody>
           {selectorData instanceof Array &&
             selectorData?.map((p) => (
-              <tr key={p.id}>
-                <td>{p.id}</td>
-                <td>{p.name}</td>
-                <td>{moment(p.dob).format("YYYY-MM-DD")}</td>
-                <td>{p.weightKG}</td>
-                <td>{p.heightCM}</td>
-                <td>{p.address}</td>
-                <td>{p.contact}</td>
-                <td>{p.emergencyContact}</td>
+              <tr key={p.Id}>
+                <td>{p.Id}</td>
+                <td>{p.Name}</td>
+                <td>{moment(p.DOB).format("YYYY-MM-DD")}</td>
+                <td>{p.WeightKG}</td>
+                <td>{p.HeightCM}</td>
+                <td>{p.Address}</td>
+                <td>{p.Contact}</td>
+                <td>{p.EmergencyContact}</td>
                 <td>
                   <button
-                    name={p.id}
+                    name={p.Id}
                     title="View medical records"
                     type="button"
-                    className="btn btn-outline-info m-1"
+                    className="btn btn-outline-primary m-1"
                     onClick={() => {
-                      recordHandler(p.id);
+                      recordHandler(p.Id);
                     }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
                       height="16"
-                      fill="#87CEFA"
+                      fill="#007bff"
                       className="bi bi-clipboard2-pulse"
                       viewBox="0 0 16 16"
                     >
@@ -167,12 +156,12 @@ const AllPatients = () => {
                     </svg>
                   </button>
                   <button
-                    name={p.id}
+                    name={p.Id}
                     title="Delete"
                     type="button"
                     className="btn btn-outline-danger m-1"
                     onClick={() => {
-                      deleteHandler(p.id);
+                      deleteHandler(p.Id);
                     }}
                   >
                     <svg

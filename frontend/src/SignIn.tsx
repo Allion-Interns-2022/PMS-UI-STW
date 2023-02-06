@@ -2,30 +2,50 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./SignIn.css";
-import React, { ChangeEvent, FormEvent } from "react";
+import React, { ChangeEvent } from "react";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
-import { useAppDispatch } from './redux/app/hooks';
+import { useAppDispatch } from "./redux/app/hooks";
 import { userActions } from "./redux/features/user";
+import { signIn } from "./services/userService";
+import initialUserValues from "./config/initialValues/initialUserValues";
+import { IUserState } from "./config/commonTypes";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = (props: any) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
 
   const usernameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setEnteredUsername(event.target.value);
+    setData({ ...data, username: event.target.value });
   };
 
   const passwordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setEnteredPassword(event.target.value);
+    setData({ ...data, password: event.target.value });
   };
+
+  const [data, setData] =
+    useState<IUserState["userDetails"]>(initialUserValues);
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch(userActions.login());
+    signIn(
+      data,
+      (successData: any) => {
+        localStorage.setItem("user", successData);
+        localStorage.setItem("isAuthenticated", JSON.stringify(true));
+        dispatch(userActions.login(successData));
+        navigate("/");
+        window.location.reload();
+      },
+      (errorData: any) => console.log(errorData)
+    );
   };
 
   return (
@@ -37,7 +57,6 @@ const SignIn = (props: any) => {
       >
         <h1 className="h3 mb-3 fw-normal">Please Sign In</h1>
         <Form.Group className="mb-3 w-10" controlId="formBasicUsername">
-          {/* <Form.Label>Username</Form.Label> */}
           <Form.Control
             onChange={usernameChangeHandler}
             value={enteredUsername}
@@ -48,7 +67,6 @@ const SignIn = (props: any) => {
           />
         </Form.Group>
         <Form.Group className="mb-3 w-100" controlId="formBasicPassword">
-          {/* <Form.Label>Password</Form.Label> */}
           <Form.Control
             onChange={passwordChangeHandler}
             value={enteredPassword}

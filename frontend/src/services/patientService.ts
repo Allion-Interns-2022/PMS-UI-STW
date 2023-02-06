@@ -1,21 +1,19 @@
 import api from "../config/api";
 import { IPatientState } from "../config/commonTypes";
-import { useAppDispatch } from "../redux/app/hooks";
-import { patientActions } from "../redux/features/patient";
 
 export const allPatients = (
-    success: (d: any) => void,
-    failed: (d: any) => void
-  ) => {
-    api.get("patients").then(
-      (response) => {
-        success(response);
-      },
-      (error) => {
-        failed(error);
-      }
-    );
-  };
+  success: (d: any) => void,
+  failed: (d: any) => void
+) => {
+  api.get("patients").then(
+    (response) => {
+      success(response);
+    },
+    (error) => {
+      failed(error);
+    }
+  );
+};
 
 export const postPatient = (
   values: IPatientState["patientDetails"],
@@ -37,7 +35,7 @@ export const updatePatient = (
   success: (d: any) => void,
   failed: (d: any) => void
 ) => {
-  api.put(`patients/${patientDetails.id}`, patientDetails).then(
+  api.put(`patients/${patientDetails.Id}`, patientDetails).then(
     (response) => {
       success(response);
     },

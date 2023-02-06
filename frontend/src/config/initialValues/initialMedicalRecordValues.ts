@@ -3,17 +3,17 @@ import { IMedicalRecordState } from "../commonTypes";
 
 export const initialMedicalRecordValues: IMedicalRecordState["medicalRecordDetails"] =
   {
-    sampleCollectedDate: moment().toDate(),
-    sugarMmol: 0,
-    temperatureCelcius: 0,
-    plateletMmol: 0,
-    hemoglobinGdl: 0,
-    patientId: 0,
-    created: moment().toDate(),
-    createdBy: "",
-    lastModified: moment().toDate(),
-    lastModifiedBy: "",
-    id: 0,
+    SampleCollectedDate: moment().toDate(),
+    SugarMmol: 0,
+    TemperatureCelcius: 0,
+    PlateletMmol: 0,
+    HemoglobinGdl: 0,
+    PatientId: 0,
+    Created: moment().toDate(),
+    CreatedBy: "",
+    LastModified: moment().toDate(),
+    LastModifiedBy: "",
+    Id: 0,
   };
 
   export default initialMedicalRecordValues;
